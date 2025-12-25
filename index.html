@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horse Racing Decision Recorder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px 20px;
+            font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-danger {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #ff5252;
+        }
+
+        .btn-success {
+            background: #51cf66;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #40c057;
+        }
+
+        .decision-item {
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .decision-item:hover {
+            background: #f0f0ff;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .decision-item h3 {
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .decision-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+
+        .info-label {
+            color: #666;
+            font-weight: 600;
+        }
+
+        .info-value {
+            color: #333;
+        }
+
+        .decision-result {
+            padding: 8px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .result-win {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .result-loss {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .result-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .sort-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        select.sort-select {
+            flex: 1;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            header h1 {
+                font-size: 2em;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .decision-info {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #28a745;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            background: white;
+            color: #333;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .filter-btn:hover {
+            border-color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🐴 Horse Racing Decision Recorder</h1>
+            <p>Track and analyze your racing decisions with confidence</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Form Section -->
+            <div class="card">
+                <h2>Record Decision</h2>
+                <div class="success-message" id="successMessage">
+                    ✓ Decision recorded successfully!
+                </div>
+                
+                <form id="decisionForm">
+                    <div class="form-group">
+                        <label for="horseName">Horse Name</label>
+                        <input type="text" id="horseName" required placeholder="e.g., Thunder Runner">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="raceDate">Race Date</label>
+                        <input type="date" id="raceDate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="trackName">Track Name</label>
+                        <input type="text" id="trackName" required placeholder="e.g., Churchill Downs">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="betAmount">Bet Amount ($)</label>
+                        <input type="number" id="betAmount" required min="0" step="0.01" placeholder="0.00">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="decisionType">Decision Type</label>
+                        <select id="decisionType" required>
+                            <option value="">-- Select Type --</option>
+                            <option value="win">Win Bet</option>
+                            <option value="place">Place Bet</option>
+                            <option value="show">Show Bet</option>
+                            <option value="exacta">Exacta</option>
+                            <option value="trifecta">Trifecta</option>
+                            <option value="superfecta">Superfecta</option>
+                            <option value="parlay">Parlay</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="odds">Odds</label>
+                        <input type="text" id="odds" required placeholder="e.g., 5:1 or 2.5">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reason">Reasoning</label>
+                        <textarea id="reason" required placeholder="Explain your decision: form, jockey, track conditions, etc."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="outcome">Outcome</label>
+                        <select id="outcome" required>
+                            <option value="">-- Select Outcome --</option>
+                            <option value="win">Won</option>
+                            <option value="loss">Lost</option>
+                            <option value="pending">Pending</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="winningsGroup" style="display: none;">
+                        <label for="winnings">Winnings ($)</label>
+                        <input type="number" id="winnings" min="0" step="0.01" placeholder="0.00">
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit" class="btn-primary">Record Decision</button>
+                        <button type="reset" class="btn-secondary">Clear Form</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Statistics Section -->
+            <div class="card">
+                <h2>Statistics & Analysis</h2>
+                
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-number" id="totalDecisions">0</div>
+                        <div class="stat-label">Total Decisions</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="winRate">0%</div>
+                        <div class="stat-label">Win Rate</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="totalBet">$0.00</div>
+                        <div class="stat-label">Total Bet</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="totalWinnings">$0.00</div>
+                        <div class="stat-label">Total Winnings</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="netProfit">$0.00</div>
+                        <div class="stat-label">Net Profit/Loss</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="avgBet">$0.00</div>
+                        <div class="stat-label">Average Bet</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 2px solid #e0e0e0;">
+                    <h3 style="color: #667eea; margin-bottom: 15px;">Best Performing Horses</h3>
+                    <div id="topHorses" class="empty-state">
+                        <p>No decisions recorded yet</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Decisions History -->
+        <div class="card">
+            <h2>Decisions History</h2>
+            
+            <div class="filter-controls">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="win">Won</button>
+                <button class="filter-btn" data-filter="loss">Lost</button>
+                <button class="filter-btn" data-filter="pending">Pending</button>
+            </div>
+
+            <div class="sort-controls">
+                <select class="sort-select" id="sortBy">
+                    <option value="date-desc">Newest First</option>
+                    <option value="date-asc">Oldest First</option>
+                    <option value="bet-high">Highest Bet First</option>
+                    <option value="bet-low">Lowest Bet First</option>
+                </select>
+            </div>
+
+            <div id="decisionsList">
+                <div class="empty-state">
+                    <p>No decisions recorded yet. Start by filling out the form!</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; text-align: center;">
+                <button class="btn-danger" id="clearAllBtn" style="max-width: 300px;">Clear All Decisions</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Management
+        class DecisionRecorder {
+            constructor() {
+                this.decisions = this.loadFromStorage();
+                this.currentFilter = 'all';
+                this.currentSort = 'date-desc';
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.render();
+                this.setTodayDate();
+            }
+
+            setTodayDate() {
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('raceDate').value = today;
+            }
+
+            setupEventListeners() {
+                // Form submission
+                document.getElementById('decisionForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.addDecision();
+                });
+
+                // Outcome change
+                document.getElementById('outcome').addEventListener('change', (e) => {
+                    const winningsGroup = document.getElementById('winningsGroup');
+                    winningsGroup.style.display = e.target.value === 'win' ? 'block' : 'none';
+                });
+
+                // Filter buttons
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                        e.target.classList.add('active');
+                        this.currentFilter = e.target.dataset.filter;
+                        this.renderDecisions();
+                    });
+                });
+
+                // Sort select
+                document.getElementById('sortBy').addEventListener('change', (e) => {
+                    this.currentSort = e.target.value;
+                    this.renderDecisions();
+                });
+
+                // Clear all
+                document.getElementById('clearAllBtn').addEventListener('click', () => {
+                    if (confirm('Are you sure you want to delete all decisions? This cannot be undone.')) {
+                        this.decisions = [];
+                        this.saveToStorage();
+                        this.render();
+                    }
+                });
+            }
+
+            addDecision() {
+                const decision = {
+                    id: Date.now(),
+                    horseName: document.getElementById('horseName').value,
+                    raceDate: document.getElementById('raceDate').value,
+                    trackName: document.getElementById('trackName').value,
+                    betAmount: parseFloat(document.getElementById('betAmount').value),
+                    decisionType: document.getElementById('decisionType').value,
+                    odds: document.getElementById('odds').value,
+                    reason: document.getElementById('reason').value,
+                    outcome: document.getElementById('outcome').value,
+                    winnings: document.getElementById('outcome').value === 'win' 
+                        ? parseFloat(document.getElementById('winnings').value || 0)
+                        : 0,
+                    dateRecorded: new Date().toISOString()
+                };
+
+                this.decisions.unshift(decision);
+                this.saveToStorage();
+                this.showSuccessMessage();
+                document.getElementById('decisionForm').reset();
+                this.setTodayDate();
+                this.render();
+            }
+
+            showSuccessMessage() {
+                const msg = document.getElementById('successMessage');
+                msg.classList.add('show');
+                setTimeout(() => msg.classList.remove('show'), 3000);
+            }
+
+            deleteDecision(id) {
+                this.decisions = this.decisions.filter(d => d.id !== id);
+                this.saveToStorage();
+                this.render();
+            }
+
+            getSortedDecisions() {
+                let filtered = this.decisions.filter(d => {
+                    return this.currentFilter === 'all' || d.outcome === this.currentFilter;
+                });
+
+                return filtered.sort((a, b) => {
+                    switch(this.currentSort) {
+                        case 'date-desc':
+                            return new Date(b.dateRecorded) - new Date(a.dateRecorded);
+                        case 'date-asc':
+                            return new Date(a.dateRecorded) - new Date(b.dateRecorded);
+                        case 'bet-high':
+                            return b.betAmount - a.betAmount;
+                        case 'bet-low':
+                            return a.betAmount - b.betAmount;
+                        default:
+                            return 0;
+                    }
+                });
+            }
+
+            getStats() {
+                const total = this.decisions.length;
+                const wins = this.decisions.filter(d => d.outcome === 'win').length;
+                const totalBet = this.decisions.reduce((sum, d) => sum + d.betAmount, 0);
+                const totalWinnings = this.decisions.reduce((sum, d) => sum + d.winnings, 0);
+                const netProfit = totalWinnings - totalBet;
+                const avgBet = total > 0 ? totalBet / total : 0;
+                const winRate = total > 0 ? ((wins / total) * 100).toFixed(1) : 0;
+
+                return {
+                    total,
+                    wins,
+                    winRate,
+                    totalBet,
+                    totalWinnings,
+                    netProfit,
+                    avgBet
+                };
+            }
+
+            getTopHorses() {
+                const horseStats = {};
+
+                this.decisions.forEach(d => {
+                    if (!horseStats[d.horseName]) {
+                        horseStats[d.horseName] = { wins: 0, total: 0, winRate: 0 };
+                    }
+                    horseStats[d.horseName].total++;
+                    if (d.outcome === 'win') {
+                        horseStats[d.horseName].wins++;
+                    }
+                });
+
+                return Object.entries(horseStats)
+                    .map(([name, stats]) => ({
+                        name,
+                        ...stats,
+                        winRate: ((stats.wins / stats.total) * 100).toFixed(1)
+                    }))
+                    .sort((a, b) => b.winRate - a.winRate)
+                    .slice(0, 5);
+            }
+
+            renderStats() {
+                const stats = this.getStats();
+                document.getElementById('totalDecisions').textContent = stats.total;
+                document.getElementById('winRate').textContent = stats.winRate + '%';
+                document.getElementById('totalBet').textContent = '$' + stats.totalBet.toFixed(2);
+                document.getElementById('totalWinnings').textContent = '$' + stats.totalWinnings.toFixed(2);
+                document.getElementById('netProfit').textContent = '$' + stats.netProfit.toFixed(2);
+                document.getElementById('avgBet').textContent = '$' + stats.avgBet.toFixed(2);
+
+                const topHorsesDiv = document.getElementById('topHorses');
+                const topHorses = this.getTopHorses();
+
+                if (topHorses.length === 0) {
+                    topHorsesDiv.innerHTML = '<p>No decisions recorded yet</p>';
+                } else {
+                    topHorsesDiv.innerHTML = topHorses.map(h => 
+                        `<div style="padding: 10px; background: white; border-radius: 5px; margin-bottom: 10px; border-left: 4px solid #667eea;">
+                            <strong>${h.name}</strong> - ${h.wins}/${h.total} wins (${h.winRate}%)
+                        </div>`
+                    ).join('');
+                }
+            }
+
+            renderDecisions() {
+                const sorted = this.getSortedDecisions();
+                const container = document.getElementById('decisionsList');
+
+                if (sorted.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><p>No decisions found</p></div>';
+                    return;
+                }
+
+                container.innerHTML = sorted.map(decision => `
+                    <div class="decision-item">
+                        <h3>${decision.horseName}</h3>
+                        <div class="decision-result result-${decision.outcome}">
+                            ${decision.outcome.toUpperCase()}
+                        </div>
+                        <div class="decision-info">
+                            <div>
+                                <span class="info-label">Date:</span>
+                                <span class="info-value">${new Date(decision.raceDate).toLocaleDateString()}</span>
+                            </div>
+                            <div>
+                                <span class="info-label">Track:</span>
+                                <span class="info-value">${decision.trackName}</span>
+                            </div>
+                            <div>
+                                <span class="info-label">Type:</span>
+                                <span class="info-value">${decision.decisionType}</span>
+                            </div>
+                            <div>
+                                <span class="info-label">Bet:</span>
+                                <span class="info-value">$${decision.betAmount.toFixed(2)}</span>
+                            </div>
+                            <div>
+                                <span class="info-label">Odds:</span>
+                                <span class="info-value">${decision.odds}</span>
+                            </div>
+                            ${decision.winnings > 0 ? `
+                            <div>
+                                <span class="info-label">Winnings:</span>
+                                <span class="info-value">$${decision.winnings.toFixed(2)}</span>
+                            </div>
+                            ` : ''}
+                        </div>
+                        <p style="color: #666; font-size: 0.9em; margin-bottom: 10px;">
+                            <strong>Reasoning:</strong> ${decision.reason}
+                        </p>
+                        <button class="btn-danger" style="width: 100%;" onclick="recorder.deleteDecision(${decision.id})">
+                            Delete
+                        </button>
+                    </div>
+                `).join('');
+            }
+
+            render() {
+                this.renderStats();
+                this.renderDecisions();
+            }
+
+            saveToStorage() {
+                localStorage.setItem('racingDecisions', JSON.stringify(this.decisions));
+            }
+
+            loadFromStorage() {
+                const data = localStorage.getItem('racingDecisions');
+                return data ? JSON.parse(data) : [];
+            }
+        }
+
+        // Initialize the application
+        const recorder = new DecisionRecorder();
+    </script>
+</body>
+</html>
